@@ -37,11 +37,12 @@
 
     .photo {
       width: 100%;
-      aspect-ratio: 1 / 1;
+      /* removed fixed aspect-ratio so media keeps its native ratio and can fill the card */
       border-radius: 18px;
       object-fit: cover;
       margin-bottom: 18px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      max-height: 420px;
     }
 
     h1 {
@@ -95,7 +96,8 @@
 
   <div class="card" id="screen1">
     <!-- Embedded image so it ALWAYS loads -->
-    <img class="photo" alt="Mendy" src="thePhoto.jpeg" />
+    <!-- <img class="photo" alt="Mendy" src="thePhoto.jpeg" /> -->
+    <video id="mainVideo" class="photo" src="theVideo.mp4" muted autoplay playsinline loop></video>
 
     <h1>Will you be my Valentine, Mendy?</h1>
     <p>You make my world brighter every single day ✨</p>
@@ -110,6 +112,8 @@
   </div>
 
   <div class="card" id="screen2" style="display:none;">
+    <!-- Photo will appear here when user clicks a button -->
+    <img id="resultPhoto" class="photo" src="thePhoto.jpeg" alt="Mendy" style="display:none; margin-bottom:12px;" />
     <h1 style="font-size:2rem;">I knew you’d say yes 💖</h1>
     <p style="font-size:1.2rem;">Happy Valentine’s Day, my love ✨</p>
     <div class="heart">❤️❤️❤️</div>
@@ -128,9 +132,21 @@
     }
     setInterval(createSparkle, 180);
 
+    // Try to start playback programmatically on load (helps some browsers allow autoplay)
+    window.addEventListener('load', () => {
+      const v = document.getElementById('mainVideo');
+      if (v && typeof v.play === 'function') v.play().catch(() => {});
+    });
+
     function showYes() {
+      // pause the background video and switch screens
+      const v = document.getElementById('mainVideo');
+      if (v && typeof v.pause === 'function') v.pause();
       document.getElementById('screen1').style.display = 'none';
       document.getElementById('screen2').style.display = 'block';
+      // show the photo on the second card
+      const img = document.getElementById('resultPhoto');
+      if (img) img.style.display = 'block';
     }
   </script>
 </body>
